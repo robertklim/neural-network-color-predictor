@@ -6,6 +6,7 @@ function pickColor() {
     r = random(255);
     g = random(255);
     b = random(255);
+    redraw();
 }
 
 function mousePressed() {
@@ -14,17 +15,27 @@ function mousePressed() {
 
 function setup() {
     createCanvas(600, 400);
-    pickColor();
-
+    noLoop();
     nn = new NeuralNetwork(3, 3, 2);
+    pickColor();
 }
 
 function colorPredictor(r, g, b) {
-    if (r + g + b > 300) {
+    let inputs = [r / 255, g / 255, b / 255]; // Set and normalize inputs
+    let outputs = nn.feedforward(inputs);
+    console.table(outputs);
+
+    if (outputs[0] > outputs[1]) {
         return 'black';
     } else {
         return 'white';
     }
+    // No NeuralNetwork
+    // if (r + g + b > 300) {
+    //     return 'black';
+    // } else {
+    //     return 'white';
+    // }
 }
 
 function draw() {
