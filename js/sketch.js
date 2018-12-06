@@ -13,29 +13,41 @@ function setup() {
     createCanvas(600, 400);
     noLoop();
     nn = new NeuralNetwork(3, 3, 2);
+
+    // initial training
+    for (let i = 0; i < 100000; i++) {
+        let r = random(255);
+        let g = random(255);
+        let b = random(255);
+        let targets = trainColor(r, g, b);
+        let inputs = [r / 255, g / 255, b / 255];
+        nn.train(inputs, targets);
+    }
+
     pickColor();
 }
 
 function mousePressed() {
-    let targets;
+    // manual training
+    // let targets;
 
-    if (mouseX > width / 2) {
-        targets = [0, 1];
-    } else {
-        targets = [1, 0];
-    }
+    // if (mouseX > width / 2) {
+    //     targets = [0, 1];
+    // } else {
+    //     targets = [1, 0];
+    // }
     
-    let inputs = [r / 255, g / 255, b / 255];
+    // let inputs = [r / 255, g / 255, b / 255];
     
-    nn.train(inputs, targets);
+    // nn.train(inputs, targets);
     
     pickColor();
 }
 
 function colorPredictor(r, g, b) {
+    console.log(floor(r + g + b));
     let inputs = [r / 255, g / 255, b / 255]; // Set and normalize inputs
     let outputs = nn.feedforward(inputs);
-    console.table(outputs);
 
     if (outputs[0] > outputs[1]) {
         return 'black';
@@ -48,6 +60,16 @@ function colorPredictor(r, g, b) {
     // } else {
     //     return 'white';
     // }
+}
+
+function trainColor(r, g, b) {
+    // learn to predict color using 300 threshold
+    // black > 300 > white
+    if (r + g + b > 300) {
+        return [1, 0];
+    } else {
+        return [0, 1];
+    }
 }
 
 function draw() {
