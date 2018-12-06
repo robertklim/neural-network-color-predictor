@@ -9,14 +9,26 @@ function pickColor() {
     redraw();
 }
 
-function mousePressed() {
-    pickColor();
-}
-
 function setup() {
     createCanvas(600, 400);
     noLoop();
     nn = new NeuralNetwork(3, 3, 2);
+    pickColor();
+}
+
+function mousePressed() {
+    let targets;
+
+    if (mouseX > width / 2) {
+        targets = [0, 1];
+    } else {
+        targets = [1, 0];
+    }
+    
+    let inputs = [r / 255, g / 255, b / 255];
+    
+    nn.train(inputs, targets);
+    
     pickColor();
 }
 
@@ -40,6 +52,11 @@ function colorPredictor(r, g, b) {
 
 function draw() {
     background(r, g, b);
+
+    // draw vertical line
+    strokeWeight(2);
+    stroke(0);
+    line(width / 2, 0, width / 2, height);
 
     textSize(64);
     noStroke();
